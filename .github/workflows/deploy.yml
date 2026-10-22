@@ -1,1 +1,51 @@
+name: Build and deploy
 
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: |
+          if [ -f artifacts/ektab-computer/package.json ]; then
+            cd artifacts/ektab-computer
+          fi
+          npm ci
+      - name: Type check
+        run: |
+          if [ -f artifacts/ektab-computer/package.json ]; then
+            cd artifacts/ektab-computer
+          fi
+          npm run typecheck
+      - name: Build
+        run: |
+          if [ -f artifacts/ektab-computer/package.json ]; then
+            cd artifacts/ektab-computer
+          fi
+          npm run build
+      - name: Deploy Cloudflare Pages
+        if: github.event_name != 'pull_request'
+        run: |
+          if [ -f artifacts/ektab-computer/package.json ]; then
+            cd artifacts/ektab-computer
+          fi
+          npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
