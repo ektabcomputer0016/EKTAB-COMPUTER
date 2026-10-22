@@ -1,7 +1,7 @@
+
 name: Build and deploy
 
 on:
-  pull_request:
   push:
     branches:
       - main
@@ -11,41 +11,30 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+
       - name: Install dependencies
-        run: |
-          if [ -f artifacts/ektab-computer/package.json ]; then
-            cd artifacts/ektab-computer
-          fi
-          npm ci
-      - name: Type check
-        run: |
-          if [ -f artifacts/ektab-computer/package.json ]; then
-            cd artifacts/ektab-computer
-          fi
-          npm run typecheck
-      - name: Build
-        run: |
-          if [ -f artifacts/ektab-computer/package.json ]; then
-            cd artifacts/ektab-computer
-          fi
-          npm run build
-      - name: Deploy Cloudflare Pages
-        if: github.event_name != 'pull_request'
-        run: |
-          if [ -f artifacts/ektab-computer/package.json ]; then
-            cd artifacts/ektab-computer
-          fi
-          npm run deploy
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy dist/public --project-name ektab-computer
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
