@@ -1,8 +1,4 @@
 
-name = "ektab-computer-portal"
-main = "src/index.js"
+name = "ektab-computer"
 compatibility_date = "2026-10-20"
-
-[assets]
-directory = "./dist/public"
-binding = "ASSETS"
+pages_build_output_dir = "./dist/public"
