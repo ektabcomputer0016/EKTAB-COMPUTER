@@ -1,1 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "EKTAB COMPUTER"
+description = "A professional Bihar digital service centre website for exploring services, submitting applications, tracking requests, and managing operations securely."
+version = "1.0.0"
+id = "artifacts/ektab-computer"
+router = "path"
 
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21069
+
+[services.development]
+run = "pnpm --filter @workspace/ektab-computer run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ektab-computer", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/ektab-computer/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21069"
+BASE_PATH = "/"
