@@ -1,8 +1,8 @@
-name = "ektab-computer"
+
+name = "ektab-computer-portal"
+main = "src/index.js"
 compatibility_date = "2026-10-20"
-pages_build_output_dir = "./dist/public"
 
-# Set TURNSTILE_SECRET_KEY with `wrangler pages secret put TURNSTILE_SECRET_KEY`.
-# Supabase URL and publishable/anon key are public configuration and may be
-# provided to the build as VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.
-
+[assets]
+directory = "./dist/public"
+binding = "ASSETS"
