@@ -44,7 +44,7 @@ jobs:
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
 
       - name: Setup GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v5 with:   enablement: true
 
       - name: Upload website files
         uses: actions/upload-pages-artifact@v3
